@@ -4,9 +4,12 @@ API v1 views for metrics_service following AAP standards.
 
 from ansible_base.lib.utils.views.django_app_api import AnsibleBaseDjangoAppApiView
 from ansible_base.oauth2_provider.permissions import OAuth2ScopePermission
+from django.db import connection
+from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.core.models import Organization, User
@@ -136,3 +139,42 @@ class OrganizationViewSet(AnsibleBaseDjangoAppApiView, viewsets.ModelViewSet):
                 return Response(status=status.HTTP_204_NO_CONTENT)
             except User.DoesNotExist:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@extend_schema(
+    operation_id="ping",
+    description="Health check endpoint that returns service status information",
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "status": {"type": "string"},
+                "service": {"type": "string"},
+                "version": {"type": "string"},
+                "db_connected": {"type": "boolean"},
+            },
+        }
+    },
+)
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def ping(request: HttpRequest) -> Response:
+    """
+    Health check endpoint that returns service status information.
+
+    This endpoint requires no authentication and provides basic service
+    status including database connectivity.
+
+    Returns:
+        Response: JSON object with status, service name, version, and db status
+    """
+    # Check database connectivity
+    db_connected = True
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+    except Exception:
+        db_connected = False
+
+    return Response({"status": "ok", "service": "metrics-service", "version": "1.0.0", "db_connected": db_connected})

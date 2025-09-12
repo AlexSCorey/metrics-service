@@ -211,6 +211,12 @@ ALLOW_SHARED_RESOURCE_CUSTOM_ROLES = True
 ALLOW_LOCAL_ASSIGNING_JWT_ROLES = True  # Set to False with resource server
 ANSIBLE_BASE_RBAC_MODEL_REGISTRY: dict[str, str] = {}
 
+# Reverse Proxy Configuration
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+FORCE_SCRIPT_NAME = os.environ.get("FORCE_SCRIPT_NAME")  # No default
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Authentication Backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # Default Django auth

@@ -18,6 +18,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from apps.api.v1.views import ping
+
 urlpatterns = [
     # Login and logout pages (with CSRF protection)
     path("login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
@@ -26,8 +28,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Dashboard interface
     path("dashboard/", include("apps.dashboard.urls")),
-    # API endpoints
-    path("api/", include("apps.api.urls")),
     # OpenAPI schema and documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -36,9 +36,11 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
-    # Django-Ansible-Base URLs (order matters - most specific first)
-    path("api/v1/", include(resource_api_urls)),  # More specific DAB resources
-    path("api/v1/", include(api_version_urls)),  # General DAB v1 endpoints
-    # Note: api_urls removed to avoid conflict with apps.api.urls
+    # Django-Ansible-Base URLs
+    path("api/v1/", include(api_version_urls)),
+    path("api/v1/", include(resource_api_urls)),
+    # API endpoints
+    path("api/", include("apps.api.urls")),
+    path("ping/", ping, name="ping"),
     path("", include(root_urls)),
 ]

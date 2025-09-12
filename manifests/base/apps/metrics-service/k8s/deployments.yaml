@@ -53,7 +53,7 @@ spec:
               value: 'redis://redis:6379/0'
           livenessProbe:
             httpGet:
-              path: /health/liveness/
+              path: /ping/
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -61,7 +61,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health/readiness/
+              path: /ping/
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 5
