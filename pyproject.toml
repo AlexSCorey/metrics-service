@@ -88,6 +88,7 @@ Repository = "https://github.com/ansible/platform-service-template"
 [tool.setuptools]
 packages = ["metrics_service", "apps", "apps.api", "apps.core", "apps.tasks", "apps.dashboard"]
 
+[tool.setuptools_scm]
 
 [tool.uv]
 dev-dependencies = [
@@ -262,4 +263,4 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
-] 
+]
