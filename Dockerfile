@@ -11,8 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install system dependencies
 USER root
-RUN dnf update -y && \
-    dnf install -y gcc postgresql-devel openldap-devel && \
+RUN dnf install -y gcc postgresql-devel openldap-devel && \
     dnf clean all
 
 # Install uv for fast dependency management
